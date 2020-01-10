@@ -1,0 +1,24 @@
+version: "3.5"
+
+services:
+  app:
+    build:
+      context: .docker
+      dockerfile: Dockerfile
+      target: dev
+    working_dir: /home/app
+    restart: unless-stopped
+    command: bash -c "go mod download && make serve"
+    environment:
+      DEBUG: "true"
+      SERVING_PORT: ":${PORT:-8081}"
+    ports:
+        - "${PORT:-8081}:8081"
+    volumes:
+      - .:/home/app
+    networks:
+      - app
+
+networks:
+  app:
+    name: app_network
